@@ -1,0 +1,70 @@
+#include "Timer.h"
+
+//LLemit=>leftmost led1
+//Lemit=>left led2
+//Remit=>right led3
+//RRemit=>rigtmost led4
+const int LLemit = 7;
+const int Lemit = 8;
+const int Remit = 9;
+const int RRemit = 10;
+
+const int LLrecieve = 20;
+const int Lrecieve = 21;
+const int Rrecieve = 22;
+const int RRrecieve = 23;
+
+int LLval = 0;
+int Lval = 0;
+int Rval = 0;
+int RRval = 0;
+
+
+Timer t;
+
+void emitLL(){
+  t.pulse(LLemit, 1, LOW);
+}
+
+void emitL(){
+  t.pulse(Lemit, 1, LOW);
+}
+
+void emitR(){
+  t.pulse(Remit, 1, LOW);
+}
+
+void emitRR(){
+  t.pulse(RRemit, 1, LOW);
+}
+
+void receiveLL(){
+  LLval = analogRead(LLreceive);
+}
+
+void receiveL(){
+  Lval = analogRead(Lreceive);
+}
+
+void receiveR(){
+  Rval = analogRead(Rreceive);
+}
+
+void receiveRR(){
+  RRval = analogRead(RRreceive);
+}
+void setup(){
+  Serial.begin(9600);
+  pinMode(LLemit, OUTPUT);
+  pinMode(Lemit, OUTPUT);
+  pinMode(Remit, OUTPUT);
+  pinMode(RRemit, OUTPUT);
+  t.after(3000, emitLL);
+  t.after(3001, receiveLL);
+  Serial.print("LLval= ");
+  Serial.print(LLval);
+}
+
+void loop(){
+  t.update();
+}
