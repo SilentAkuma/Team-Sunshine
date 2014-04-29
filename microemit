@@ -9,10 +9,10 @@ const int Lemit = 8;
 const int Remit = 9;
 const int RRemit = 10;
 
-const int LLrecieve = 20;
-const int Lrecieve = 21;
-const int Rrecieve = 22;
-const int RRrecieve = 23;
+const int LLreceive = 20;
+const int Lreceive = 21;
+const int Rreceive = 22;
+const int RRreceive = 23;
 
 int LLval = 0;
 int Lval = 0;
@@ -59,12 +59,47 @@ void setup(){
   pinMode(Lemit, OUTPUT);
   pinMode(Remit, OUTPUT);
   pinMode(RRemit, OUTPUT);
-  t.after(3000, emitLL);
-  t.after(3001, receiveLL);
+  
   Serial.print("LLval= ");
   Serial.print(LLval);
 }
 
 void loop(){
   t.update();
+  
+  
+  digitalWrite(LLemit, HIGH);
+  delayMicroseconds(100);
+  receiveLL();
+  Serial.print("LLval= ");
+  Serial.print(LLval);
+  delayMicroseconds(150);
+  digitalWrite(LLemit, LOW);
+  
+  
+  digitalWrite(Lemit, HIGH);
+  delayMicroseconds(100);
+  receiveL();
+  Serial.print(" Lvalue= ");
+  Serial.print(Lval);
+  delayMicroseconds(150);
+  digitalWrite(Lemit, LOW);
+  
+  
+  digitalWrite(Remit, HIGH);
+  delayMicroseconds(100);
+  receiveR();
+  Serial.print(" Rvalue= ");
+  Serial.print(Rval);
+  delayMicroseconds(150);
+  digitalWrite(Remit, LOW);
+  
+  
+  digitalWrite(RRemit, HIGH);
+  delayMicroseconds(100);
+  receiveRR();
+  Serial.print(" RRvalue= ");
+  Serial.println(RRval);
+  delayMicroseconds(150);
+  digitalWrite(RRemit, LOW);
 }
