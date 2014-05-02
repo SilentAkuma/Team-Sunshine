@@ -15,6 +15,8 @@ static motor_data_t m_motorData;
 
 void initMotors(uint8_t IN1, uint8_t IN2, uint8_t IN3, uint8_t IN4, uint8_t ENA, uint8_t ENB)
 {
+    analogWriteRes(12);
+
     m_motorData.IN1 = IN1;
     m_motorData.IN2 = IN2;
     m_motorData.IN3 = IN3;
