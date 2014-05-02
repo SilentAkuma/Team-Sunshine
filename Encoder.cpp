@@ -23,6 +23,11 @@ void initEncoders(uint8_t outA1, uint8_t outB1, uint8_t outA2, uint8_t outB2){
     m_encoder.outA2 = outA2;
     m_encoder.outB2 = outB2;
 
+    pinMode(outA1, INPUT);
+    pinMode(outB1, INPUT);
+    pinMode(outA2, INPUT);
+    pinMode(outB2, INPUT);
+
     m_encoder.state1 = digitalRead(outA1);
     m_encoder.state2 = digitalRead(outB1);
     m_encoder.state3 = digitalRead(outA2);
@@ -116,7 +121,7 @@ void iterate4(){
 }
 
 
-void resestCounter(uint8_t encoder){
+void resetCounter(uint8_t encoder){
     if(encoder&Lencoder){
         Lcounter=0;
     }

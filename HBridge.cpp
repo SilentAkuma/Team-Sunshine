@@ -43,14 +43,26 @@ void setMotor(uint8_t motor, int16_t speed)
 
         if(motor & MOTOR_A)
         {
+#ifdef MOTOR_A_INVERT
+            digitalWrite(m_motorData.IN2, LOW);
+            analogWrite(m_motorData.IN1, -speed);
+#endif
+#ifndef MOTOR_A_INVERT
             digitalWrite(m_motorData.IN1, LOW);
             analogWrite(m_motorData.IN2, -speed);
+#endif // MOTOR_A_INVERT
         }
 
         if(motor & MOTOR_B)
         {
+#ifdef MOTOR_B_INVERT
+            digitalWrite(m_motorData.IN4, LOW);
+            analogWrite(m_motorData.IN3, -speed);
+#endif
+#ifndef MOTOR_B_INVERT
             digitalWrite(m_motorData.IN3, LOW);
             analogWrite(m_motorData.IN4, -speed);
+#endif // MOTOR_B_INVERT
         }
     }
     else if(speed > 0)
@@ -62,14 +74,28 @@ void setMotor(uint8_t motor, int16_t speed)
 
         if(motor & MOTOR_A)
         {
+
+#ifdef MOTOR_A_INVERT
+            digitalWrite(m_motorData.IN1, LOW);
+            analogWrite(m_motorData.IN2, speed);
+#endif
+#ifndef MOTOR_A_INVERT
             digitalWrite(m_motorData.IN2, LOW);
             analogWrite(m_motorData.IN1, speed);
+#endif // MOTOR_A_INVERT
         }
 
         if(motor & MOTOR_B)
         {
+
+#ifdef MOTOR_B_INVERT
+            digitalWrite(m_motorData.IN3, LOW);
+            analogWrite(m_motorData.IN4, speed);
+#endif
+#ifndef MOTOR_B_INVERT
             digitalWrite(m_motorData.IN4, LOW);
             analogWrite(m_motorData.IN3, speed);
+#endif // MOTOR_B_INVERT
         }
     }
     else

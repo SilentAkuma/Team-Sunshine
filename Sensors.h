@@ -5,7 +5,7 @@
 #include "Arduino.h"
 
 #define SENSOR_D_PERIOD 10000
-#define SENSOR_D_EMIT_TIME 100
+#define SENSOR_D_EMIT_TIME 80
 
 class Sensors
 {

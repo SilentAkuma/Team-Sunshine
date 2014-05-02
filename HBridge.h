@@ -10,6 +10,9 @@
 #define MOTOR_A 1
 #define MOTOR_B 2
 
+#define MOTOR_A_INVERT
+//#define MOTOR_B_INVERT
+
 void initMotors(uint8_t IN1, uint8_t IN2, uint8_t IN3, uint8_t IN4, uint8_t ENA, uint8_t ENB);
 void setMotor(uint8_t motor, int16_t speed);
 void stopMotor(uint8_t motor);
