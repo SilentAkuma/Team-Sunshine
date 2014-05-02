@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#define MOTOR_FULL_REVERSE -1023
-#define MOTOR_FULL_FORWARD 1023
+#define MOTOR_FULL_REVERSE -4095
+#define MOTOR_FULL_FORWARD 4095
 #define MOTOR_STOP 0
 
 #define MOTOR_A 1
