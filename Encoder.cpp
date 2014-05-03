@@ -1,6 +1,11 @@
 #include "Encoder.h"
 #include "Arduino.h"
 
+void iterate1();
+void iterate2();
+void iterate3();
+void iterate4();
+
 typedef struct
 {
     uint8_t outA1;
@@ -18,11 +23,29 @@ static encoder_data m_encoder;
 int32_t Lcounter = 0;
 int32_t Rcounter = 0;
 
-int32_t p_Lcounter = 0;
-int32_t p_Rcounter = 0;
+uint8_t LHeadIndex, LTailIndex, RHeadIndex, RTailIndex;
 
-void initEncoders(uint8_t outA1, uint8_t outB1, uint8_t outA2, uint8_t outB2)
+typedef struct
 {
+    int32_t m_micros;
+    int32_t m_count;
+} micros_and_enc_ct_t;
+
+//micros_and_enc_ct_t *LMicrosBuffer, *RMicrosBuffer;
+micros_and_enc_ct_t LMicrosBuffer[10];
+micros_and_enc_ct_t RMicrosBuffer[10];
+
+uint8_t microsBufferSize = 10;
+
+void initEncoders(uint8_t outA1, uint8_t outB1, uint8_t outA2, uint8_t outB2, uint8_t bufferSize)
+{
+//    LMicrosBuffer = (micros_and_enc_ct_t*)calloc(bufferSize, sizeof(micros_and_enc_ct_t));
+//    RMicrosBuffer = (micros_and_enc_ct_t*)calloc(bufferSize, sizeof(micros_and_enc_ct_t));
+
+    LHeadIndex = RHeadIndex = bufferSize-1;
+    LTailIndex = RTailIndex = 0;
+    microsBufferSize = bufferSize;
+
     m_encoder.outA1 = outA1;
     m_encoder.outB1 = outB1;
     m_encoder.outA2 = outA2;
@@ -44,6 +67,87 @@ void initEncoders(uint8_t outA1, uint8_t outB1, uint8_t outA2, uint8_t outB2)
     attachInterrupt(outB2, iterate4, CHANGE);
 }
 
+void cleanupEncoders(void)
+{
+//    free(LMicrosBuffer);
+//    free(RMicrosBuffer);
+}
+
+void IncrementLCounter(void)
+{
+    Lcounter++;
+
+    LHeadIndex++;
+    if(LHeadIndex == microsBufferSize)
+    {
+        LHeadIndex = 0;
+    }
+    LTailIndex++;
+    if(LTailIndex == microsBufferSize)
+    {
+        LTailIndex = 0;
+    }
+
+    LMicrosBuffer[LHeadIndex].m_micros = micros();
+    LMicrosBuffer[LHeadIndex].m_count = Lcounter;
+}
+
+void IncrementRCounter(void)
+{
+    Rcounter++;
+
+    RHeadIndex++;
+    if(RHeadIndex == microsBufferSize)
+    {
+        RHeadIndex = 0;
+    }
+    RTailIndex++;
+    if(RTailIndex == microsBufferSize)
+    {
+        RTailIndex = 0;
+    }
+
+    RMicrosBuffer[RHeadIndex].m_micros = micros();
+    RMicrosBuffer[RHeadIndex].m_count = Rcounter;
+}
+
+void DecrementLCounter(void)
+{
+    Lcounter--;
+
+    LHeadIndex++;
+    if(LHeadIndex == microsBufferSize)
+    {
+        LHeadIndex = 0;
+    }
+    LTailIndex++;
+    if(LTailIndex == microsBufferSize)
+    {
+        LTailIndex = 0;
+    }
+
+    LMicrosBuffer[LHeadIndex].m_micros = micros();
+    LMicrosBuffer[LHeadIndex].m_count = Lcounter;
+}
+
+void DecrementRCounter(void)
+{
+    Rcounter--;
+
+    RHeadIndex++;
+    if(RHeadIndex == microsBufferSize)
+    {
+        RHeadIndex = 0;
+    }
+    RTailIndex++;
+    if(RTailIndex == microsBufferSize)
+    {
+        RTailIndex = 0;
+    }
+
+    RMicrosBuffer[RHeadIndex].m_micros = micros();
+    RMicrosBuffer[RHeadIndex].m_count = Rcounter;
+}
 
 void iterate1()
 {
@@ -52,22 +156,26 @@ void iterate1()
     {
         if(!m_encoder.state2)
         {
-            Lcounter++;
+            //Lcounter++;
+            IncrementLCounter();
         }
         else
         {
-            Lcounter--;
+            //Lcounter--;
+            DecrementLCounter();
         }
     }
     if(m_encoder.state1)
     {
         if(m_encoder.state2)
         {
-            Lcounter++;
+            //Lcounter++;
+            IncrementLCounter();
         }
         else
         {
-            Lcounter--;
+            //Lcounter--;
+            DecrementLCounter();
         }
     }
 }
@@ -79,22 +187,26 @@ void iterate2()
     {
         if(m_encoder.state1)
         {
-            Lcounter++;
+            //Lcounter++;
+            IncrementLCounter();
         }
         else
         {
-            Lcounter--;
+            //Lcounter--;
+            DecrementLCounter();
         }
     }
     if(m_encoder.state2)
     {
         if(!m_encoder.state1)
         {
-            Lcounter++;
+            //Lcounter++;
+            IncrementLCounter();
         }
         else
         {
-            Lcounter--;
+            //Lcounter--;
+            DecrementLCounter();
         }
     }
 }
@@ -106,22 +218,26 @@ void iterate3()
     {
         if(!m_encoder.state4)
         {
-            Rcounter++;
+            //Rcounter++;
+            IncrementRCounter();
         }
         else
         {
-            Rcounter--;
+            //Rcounter--;
+            DecrementRCounter();
         }
     }
     if(m_encoder.state3)
     {
         if(m_encoder.state4)
         {
-            Rcounter++;
+            //Rcounter++;
+            IncrementRCounter();
         }
         else
         {
-            Rcounter--;
+            //Rcounter--;
+            DecrementRCounter();
         }
     }
 }
@@ -133,22 +249,26 @@ void iterate4()
     {
         if(m_encoder.state3)
         {
-            Rcounter++;
+            //Rcounter++;
+            IncrementRCounter();
         }
         else
         {
-            Rcounter--;
+            //Rcounter--;
+            DecrementRCounter();
         }
     }
     if(m_encoder.state4)
     {
         if(!m_encoder.state3)
         {
-            Rcounter++;
+            //Rcounter++;
+            IncrementRCounter();
         }
         else
         {
-            Rcounter--;
+            //Rcounter--;
+            DecrementRCounter();
         }
     }
 }
@@ -166,16 +286,22 @@ void resetCounter(uint8_t encoder)
     }
 }
 
-float getLWheelVelocity(float dt)
+float getLWheelVelocity()
 {
-    float ret = ((Lcounter - p_Lcounter)/dt)/ENC_FULL_ROT_TICKS;
-    p_Lcounter = Lcounter;
+    float ret = ((float)(LMicrosBuffer[LHeadIndex].m_count - LMicrosBuffer[LTailIndex].m_count))/
+                ((LMicrosBuffer[LHeadIndex].m_micros - LMicrosBuffer[LTailIndex].m_micros)*0.000001f)/ENC_FULL_ROT_TICKS;
+#ifdef ENC_L_WHEEL_INVERTED
+    return -ret;
+#endif // ENC_L_WHEEL_INVERTED
     return ret;
 }
 
-float getRWheelVelocity(float dt)
+float getRWheelVelocity()
 {
-    float ret = ((Rcounter - p_Rcounter)/dt)/ENC_FULL_ROT_TICKS;
-    p_Rcounter = Rcounter;
+    float ret = ((float)(RMicrosBuffer[RHeadIndex].m_count - RMicrosBuffer[RTailIndex].m_count))/
+                ((RMicrosBuffer[RHeadIndex].m_micros - RMicrosBuffer[RTailIndex].m_micros)*0.000001f)/ENC_FULL_ROT_TICKS;
+#ifdef ENC_R_WHEEL_INVERTED
+    return -ret;
+#endif // ENC_R_WHEEL_INVERTED
     return ret;
 }
