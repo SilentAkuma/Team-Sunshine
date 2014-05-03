@@ -19,6 +19,7 @@ protected:
 
     uint16_t *m_sensor_data_internal;
     uint16_t *m_sensor_data_external;
+    int16_t *m_sensor_offsets;
     bool *m_sensor_data_lock;
 
     typedef enum
@@ -32,6 +33,7 @@ protected:
 public:
     Sensors();
     ~Sensors();
+    void calibrateSensors(uint16_t iterations, uint8_t delay_ms);
     void init(uint16_t* sensor_data, uint8_t *tx_pins, uint8_t *rx_pins, uint8_t sensor_ct, uint32_t period = SENSOR_D_PERIOD, uint32_t emit_time = SENSOR_D_EMIT_TIME);
     void updateData(void);
 

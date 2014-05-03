@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 
-#define Lencoder 1
-#define Rencoder 2
-#define Rotation 24
+#define ENC_L_ENCODER 1
+#define ENC_R_ENCODER 2
+#define ENC_FULL_ROT_TICKS 48
 
 extern int32_t Lcounter, Rcounter;
 
@@ -16,6 +16,7 @@ void iterate3();
 void iterate4();
 void resetCounter(uint8_t encoder);
 
-
+float getLWheelVelocity(float dt);
+float getRWheelVelocity(float dt);
 
 #endif // ENCODER_H

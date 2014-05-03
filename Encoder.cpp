@@ -1,7 +1,8 @@
 #include "Encoder.h"
 #include "Arduino.h"
 
-typedef struct{
+typedef struct
+{
     uint8_t outA1;
     uint8_t outB1;
     uint8_t outA2;
@@ -17,7 +18,11 @@ static encoder_data m_encoder;
 int32_t Lcounter = 0;
 int32_t Rcounter = 0;
 
-void initEncoders(uint8_t outA1, uint8_t outB1, uint8_t outA2, uint8_t outB2){
+int32_t p_Lcounter = 0;
+int32_t p_Rcounter = 0;
+
+void initEncoders(uint8_t outA1, uint8_t outB1, uint8_t outA2, uint8_t outB2)
+{
     m_encoder.outA1 = outA1;
     m_encoder.outB1 = outB1;
     m_encoder.outA2 = outA2;
@@ -40,93 +45,137 @@ void initEncoders(uint8_t outA1, uint8_t outB1, uint8_t outA2, uint8_t outB2){
 }
 
 
-void iterate1(){
+void iterate1()
+{
     m_encoder.state1= !m_encoder.state1;
-    if(!m_encoder.state1){
-        if(!m_encoder.state2){
+    if(!m_encoder.state1)
+    {
+        if(!m_encoder.state2)
+        {
             Lcounter++;
         }
-        else{
+        else
+        {
             Lcounter--;
         }
     }
-    if(m_encoder.state1){
-        if(m_encoder.state2){
+    if(m_encoder.state1)
+    {
+        if(m_encoder.state2)
+        {
             Lcounter++;
         }
-        else{
+        else
+        {
             Lcounter--;
         }
     }
 }
 
-void iterate2(){
+void iterate2()
+{
     m_encoder.state2= !m_encoder.state2;
-    if(!m_encoder.state2){
-        if(m_encoder.state1){
+    if(!m_encoder.state2)
+    {
+        if(m_encoder.state1)
+        {
             Lcounter++;
         }
-        else{
+        else
+        {
             Lcounter--;
         }
     }
-    if(m_encoder.state2){
-       if(!m_encoder.state1){
+    if(m_encoder.state2)
+    {
+        if(!m_encoder.state1)
+        {
             Lcounter++;
-       }
-       else{
+        }
+        else
+        {
             Lcounter--;
-       }
+        }
     }
 }
 
-void iterate3(){
+void iterate3()
+{
     m_encoder.state3= !m_encoder.state3;
-    if(!m_encoder.state3){
-        if(!m_encoder.state4){
+    if(!m_encoder.state3)
+    {
+        if(!m_encoder.state4)
+        {
             Rcounter++;
         }
-        else{
+        else
+        {
             Rcounter--;
         }
     }
-    if(m_encoder.state3){
-        if(m_encoder.state4){
+    if(m_encoder.state3)
+    {
+        if(m_encoder.state4)
+        {
             Rcounter++;
         }
-        else{
+        else
+        {
             Rcounter--;
         }
     }
 }
 
-void iterate4(){
+void iterate4()
+{
     m_encoder.state4= !m_encoder.state4;
-    if(!m_encoder.state4){
-        if(m_encoder.state3){
+    if(!m_encoder.state4)
+    {
+        if(m_encoder.state3)
+        {
             Rcounter++;
         }
-        else{
+        else
+        {
             Rcounter--;
         }
     }
-    if(m_encoder.state4){
-       if(!m_encoder.state3){
+    if(m_encoder.state4)
+    {
+        if(!m_encoder.state3)
+        {
             Rcounter++;
-       }
-       else{
+        }
+        else
+        {
             Rcounter--;
-       }
+        }
     }
 }
 
 
-void resetCounter(uint8_t encoder){
-    if(encoder&Lencoder){
+void resetCounter(uint8_t encoder)
+{
+    if(encoder&ENC_L_ENCODER)
+    {
         Lcounter=0;
     }
-    else{
+    if(encoder&ENC_R_ENCODER)
+    {
         Rcounter=0;
     }
 }
 
+float getLWheelVelocity(float dt)
+{
+    float ret = ((Lcounter - p_Lcounter)/dt)/ENC_FULL_ROT_TICKS;
+    p_Lcounter = Lcounter;
+    return ret;
+}
+
+float getRWheelVelocity(float dt)
+{
+    float ret = ((Rcounter - p_Rcounter)/dt)/ENC_FULL_ROT_TICKS;
+    p_Rcounter = Rcounter;
+    return ret;
+}
