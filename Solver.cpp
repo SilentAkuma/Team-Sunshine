@@ -250,10 +250,10 @@ void floodfill() {
 
 void handleFirstTurn(bool left, bool right, bool front) {
 	//First turn is right, no change
-	if(left && front)
+	if(!right)
 		firstTurn = false;
 	//First turn is left, change current position and update walls
-	if(right && front) {
+	if(!left) {
 		firstTurn = false;
 		curCol = MAZEMAX - 1; //Rightmost column is current column
 		//Swap walls
