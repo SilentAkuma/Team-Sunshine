@@ -4,7 +4,7 @@
 #include "Arduino.h"
 #include "ITG3200.h"
 
-static const float fudge_factor = 3;
+static const float fudge_factor = 3.3;
 static const float cell_size = 17.9 - fudge_factor; //cm
 static const float wheel_diameter = 4.25; //cm
 static const float cell_size_in_wheel_rots = cell_size/(wheel_diameter * PI);
