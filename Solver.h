@@ -1,6 +1,7 @@
 #ifndef SOLVER
 #define SOLVER
 
+
 #include <stdint.h>
 #include <vector>
 
@@ -9,10 +10,10 @@
 #define MAZEGOALCOL 7 //7
 
 enum Dir {
-	Left = 0,
-	Right = 1,
-	Forward = 2,
-	Reverse = 3,
+	Left,
+	Right,
+	Forward,
+	Reverse
 };
 
 enum Heading {
@@ -31,6 +32,18 @@ typedef struct Vector {
 	Dir dir;
 	uint8_t mag;
 } Vector;
+
+extern int8_t maze[16][16];
+extern int8_t wallsx[16][15];
+extern int8_t wallsy[15][16];
+extern int8_t destCol; //7
+extern int8_t destRow; //8
+extern int8_t curRow;
+extern int8_t curCol;
+extern Heading curHd;
+extern Vector directions[128];
+extern bool firstTurn;
+extern bool shouldGoHome;
 
 //This must be run until first turn is executed.  Expects the walls detected at first cell where
 //turn is necessary.

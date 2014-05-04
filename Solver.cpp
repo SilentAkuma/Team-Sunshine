@@ -1,5 +1,5 @@
 #include "Solver.h"
-#include <iostream>
+
 #include <stdint.h>
 #include <vector>
 
@@ -399,6 +399,7 @@ uint16_t secondRun() {
 	return index;
 }
 
+/*
 //THIS MAIN IS AN EXAMPLE OF INTENDED EXECUTION FLOW
 int main() {
 	Point nextSpace;
@@ -425,26 +426,26 @@ int main() {
 
 	//Find the next move based on the next space
 	//nextMove = moveNextSpace(nextSpace);
-	
-	/*
-	//If first arrival at goal, go back to begining
-	if(nextSpace.row == destRow && nextSpace.col == destCol && shouldGoHome) {
-		shouldGoHome = false;
-		destRow = 0;
-		destCol = 0;
-		//floodfill();
-	}
-	
 
-	//If arrived back at home, do fast run and DONE
-	if(nextSpace.row == destRow && nextSpace.col == destCol && !shouldGoHome) {
-		directions_size = secondRun();
-		for(uint16_t i = 0; i < directions_size; i++) {
-			std::cout << "DIRECTIONS: " << directions[i].dir << ", " << (int) directions[i].mag << std::endl;
-		}
-		break;
-	}
-	*/
+
+//	//If first arrival at goal, go back to begining
+//	if(nextSpace.row == destRow && nextSpace.col == destCol && shouldGoHome) {
+//		shouldGoHome = false;
+//		destRow = 0;
+//		destCol = 0;
+//		//floodfill();
+//	}
+//
+//
+//	//If arrived back at home, do fast run and DONE
+//	if(nextSpace.row == destRow && nextSpace.col == destCol && !shouldGoHome) {
+//		directions_size = secondRun();
+//		for(uint16_t i = 0; i < directions_size; i++) {
+//			std::cout << "DIRECTIONS: " << directions[i].dir << ", " << (int) directions[i].mag << std::endl;
+//		}
+//		break;
+//	}
+
 
 	// THIS IS A SAMPLE TRAVERSAL EXAMPLE
 	while(1) {
@@ -484,4 +485,4 @@ int main() {
     return 1;
 }
 
-
+*/
