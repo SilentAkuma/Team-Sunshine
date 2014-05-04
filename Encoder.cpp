@@ -152,6 +152,7 @@ void DecrementRCounter(void)
 
 void iterate1()
 {
+#ifndef ENC_L_WHEEL_INVERTED
     if(!digitalRead(m_encoder.outA1))
     {
         if(!digitalRead(m_encoder.outB1))
@@ -162,7 +163,8 @@ void iterate1()
         {
             DecrementLCounter();
         }
-    }else
+    }
+    else
     {
         if(digitalRead(m_encoder.outB1))
         {
@@ -173,10 +175,35 @@ void iterate1()
             DecrementLCounter();
         }
     }
+#else
+    if(!digitalRead(m_encoder.outA1))
+    {
+        if(!digitalRead(m_encoder.outB1))
+        {
+            DecrementLCounter();
+        }
+        else
+        {
+            IncrementLCounter();
+        }
+    }
+    else
+    {
+        if(digitalRead(m_encoder.outB1))
+        {
+            DecrementLCounter();
+        }
+        else
+        {
+            IncrementLCounter();
+        }
+    }
+#endif
 }
 
 void iterate2()
 {
+#ifndef ENC_L_WHEEL_INVERTED
     if(!digitalRead(m_encoder.outB1))
     {
         if(digitalRead(m_encoder.outA1))
@@ -187,7 +214,8 @@ void iterate2()
         {
             DecrementLCounter();
         }
-    }else
+    }
+    else
     {
         if(!digitalRead(m_encoder.outA1))
         {
@@ -198,10 +226,35 @@ void iterate2()
             DecrementLCounter();
         }
     }
+#else
+    if(!digitalRead(m_encoder.outB1))
+    {
+        if(digitalRead(m_encoder.outA1))
+        {
+            DecrementLCounter();
+        }
+        else
+        {
+            IncrementLCounter();
+        }
+    }
+    else
+    {
+        if(!digitalRead(m_encoder.outA1))
+        {
+            DecrementLCounter();
+        }
+        else
+        {
+            IncrementLCounter();
+        }
+    }
+#endif
 }
 
 void iterate3()
 {
+#ifndef ENC_R_WHEEL_INVERTED
     if(!digitalRead(m_encoder.outA2))
     {
         if(!digitalRead(m_encoder.outB2))
@@ -212,7 +265,8 @@ void iterate3()
         {
             DecrementRCounter();
         }
-    }else
+    }
+    else
     {
         if(digitalRead(m_encoder.outB2))
         {
@@ -223,10 +277,35 @@ void iterate3()
             DecrementRCounter();
         }
     }
+#else
+    if(!digitalRead(m_encoder.outA2))
+    {
+        if(!digitalRead(m_encoder.outB2))
+        {
+            DecrementRCounter();
+        }
+        else
+        {
+            IncrementRCounter();
+        }
+    }
+    else
+    {
+        if(digitalRead(m_encoder.outB2))
+        {
+            DecrementRCounter();
+        }
+        else
+        {
+            IncrementRCounter();
+        }
+    }
+#endif
 }
 
 void iterate4()
 {
+#ifndef ENC_R_WHEEL_INVERTED
     if(!digitalRead(m_encoder.outB2))
     {
         if(digitalRead(m_encoder.outA2))
@@ -237,7 +316,8 @@ void iterate4()
         {
             DecrementRCounter();
         }
-    }else
+    }
+    else
     {
         if(!digitalRead(m_encoder.outA2))
         {
@@ -248,6 +328,30 @@ void iterate4()
             DecrementRCounter();
         }
     }
+#else
+    if(!digitalRead(m_encoder.outB2))
+    {
+        if(digitalRead(m_encoder.outA2))
+        {
+            DecrementRCounter();
+        }
+        else
+        {
+            IncrementRCounter();
+        }
+    }
+    else
+    {
+        if(!digitalRead(m_encoder.outA2))
+        {
+            DecrementRCounter();
+        }
+        else
+        {
+            IncrementRCounter();
+        }
+    }
+#endif
 }
 
 
@@ -272,11 +376,7 @@ float getLWheelVelocity()
 
     float ret = ((float)(LMicrosBuffer[LHeadIndex].m_count - LMicrosBuffer[LTailIndex].m_count))/
                 ((LMicrosBuffer[LHeadIndex].m_micros - LMicrosBuffer[LTailIndex].m_micros)*0.000001f)/ENC_FULL_ROT_TICKS;
-#ifdef ENC_L_WHEEL_INVERTED
-    return -ret;
-#else
     return ret;
-#endif // ENC_L_WHEEL_INVERTED
 }
 
 float getRWheelVelocity()
@@ -288,9 +388,5 @@ float getRWheelVelocity()
 
     float ret = ((float)(RMicrosBuffer[RHeadIndex].m_count - RMicrosBuffer[RTailIndex].m_count))/
                 ((RMicrosBuffer[RHeadIndex].m_micros - RMicrosBuffer[RTailIndex].m_micros)*0.000001f)/ENC_FULL_ROT_TICKS;
-#ifdef ENC_R_WHEEL_INVERTED
-    return -ret;
-#else
     return ret;
-#endif // ENC_R_WHEEL_INVERTED
 }
