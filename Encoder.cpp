@@ -14,10 +14,6 @@ typedef struct
     uint8_t outB1;
     uint8_t outA2;
     uint8_t outB2;
-    uint8_t state1;
-    uint8_t state2;
-    uint8_t state3;
-    uint8_t state4;
 } encoder_data;
 
 static encoder_data m_encoder;
@@ -65,11 +61,6 @@ void initEncoders(uint8_t outA1, uint8_t outB1, uint8_t outA2, uint8_t outB2, ui
     pinMode(outB1, INPUT);
     pinMode(outA2, INPUT);
     pinMode(outB2, INPUT);
-
-    m_encoder.state1 = digitalRead(outA1);
-    m_encoder.state2 = digitalRead(outB1);
-    m_encoder.state3 = digitalRead(outA2);
-    m_encoder.state4 = digitalRead(outB2);
 
     attachInterrupt(outA1, iterate1, CHANGE);
     attachInterrupt(outB1, iterate2, CHANGE);
@@ -161,30 +152,24 @@ void DecrementRCounter(void)
 
 void iterate1()
 {
-    m_encoder.state1= !m_encoder.state1;
-    if(!m_encoder.state1)
+    if(!digitalRead(m_encoder.outA1))
     {
-        if(!m_encoder.state2)
+        if(!digitalRead(m_encoder.outB1))
         {
-            //Lcounter++;
             IncrementLCounter();
         }
         else
         {
-            //Lcounter--;
             DecrementLCounter();
         }
-    }
-    if(m_encoder.state1)
+    }else
     {
-        if(m_encoder.state2)
+        if(digitalRead(m_encoder.outB1))
         {
-            //Lcounter++;
             IncrementLCounter();
         }
         else
         {
-            //Lcounter--;
             DecrementLCounter();
         }
     }
@@ -192,30 +177,24 @@ void iterate1()
 
 void iterate2()
 {
-    m_encoder.state2= !m_encoder.state2;
-    if(!m_encoder.state2)
+    if(!digitalRead(m_encoder.outB1))
     {
-        if(m_encoder.state1)
+        if(digitalRead(m_encoder.outA1))
         {
-            //Lcounter++;
             IncrementLCounter();
         }
         else
         {
-            //Lcounter--;
             DecrementLCounter();
         }
-    }
-    if(m_encoder.state2)
+    }else
     {
-        if(!m_encoder.state1)
+        if(!digitalRead(m_encoder.outA1))
         {
-            //Lcounter++;
             IncrementLCounter();
         }
         else
         {
-            //Lcounter--;
             DecrementLCounter();
         }
     }
@@ -223,30 +202,24 @@ void iterate2()
 
 void iterate3()
 {
-    m_encoder.state3= !m_encoder.state3;
-    if(!m_encoder.state3)
+    if(!digitalRead(m_encoder.outA2))
     {
-        if(!m_encoder.state4)
+        if(!digitalRead(m_encoder.outB2))
         {
-            //Rcounter++;
             IncrementRCounter();
         }
         else
         {
-            //Rcounter--;
             DecrementRCounter();
         }
-    }
-    if(m_encoder.state3)
+    }else
     {
-        if(m_encoder.state4)
+        if(digitalRead(m_encoder.outB2))
         {
-            //Rcounter++;
             IncrementRCounter();
         }
         else
         {
-            //Rcounter--;
             DecrementRCounter();
         }
     }
@@ -254,30 +227,24 @@ void iterate3()
 
 void iterate4()
 {
-    m_encoder.state4= !m_encoder.state4;
-    if(!m_encoder.state4)
+    if(!digitalRead(m_encoder.outB2))
     {
-        if(m_encoder.state3)
+        if(digitalRead(m_encoder.outA2))
         {
-            //Rcounter++;
             IncrementRCounter();
         }
         else
         {
-            //Rcounter--;
             DecrementRCounter();
         }
-    }
-    if(m_encoder.state4)
+    }else
     {
-        if(!m_encoder.state3)
+        if(!digitalRead(m_encoder.outA2))
         {
-            //Rcounter++;
             IncrementRCounter();
         }
         else
         {
-            //Rcounter--;
             DecrementRCounter();
         }
     }
@@ -298,7 +265,7 @@ void resetCounter(uint8_t encoder)
 
 float getLWheelVelocity()
 {
-    if((micros() - LMicrosBuffer[LHeadIndex].m_micros) > (2*(LMicrosBuffer[LHeadIndex].m_micros - LMicrosBuffer[LTailIndex].m_micros)))
+    if((micros() - LMicrosBuffer[LHeadIndex].m_micros) > (2*(LMicrosBuffer[LHeadIndex].m_micros - LMicrosBuffer[LTailIndex].m_micros)/ENC_BUFFER_SIZE))
     {
         return 0;
     }
@@ -314,7 +281,7 @@ float getLWheelVelocity()
 
 float getRWheelVelocity()
 {
-    if((micros() - RMicrosBuffer[RHeadIndex].m_micros) > (2*(RMicrosBuffer[RHeadIndex].m_micros - RMicrosBuffer[RTailIndex].m_micros)))
+    if((micros() - RMicrosBuffer[RHeadIndex].m_micros) > (2*(RMicrosBuffer[RHeadIndex].m_micros - RMicrosBuffer[RTailIndex].m_micros)/ENC_BUFFER_SIZE))
     {
         return 0;
     }
