@@ -4,8 +4,8 @@
 #include "IntervalTimer.h"
 #include "Arduino.h"
 
-#define SENSOR_D_PERIOD 1000
-#define SENSOR_D_EMIT_TIME 50
+#define SENSOR_D_PERIOD 10000
+#define SENSOR_D_EMIT_TIME 100
 
 #define SENSOR_NUM 4
 
@@ -21,7 +21,6 @@ protected:
 
     uint16_t m_sensor_data_internal[SENSOR_NUM];
     uint16_t *m_sensor_data_external;
-    int16_t m_sensor_offsets[SENSOR_NUM];
     bool m_sensor_data_lock[SENSOR_NUM];
 
     typedef enum
@@ -33,6 +32,9 @@ protected:
     sensor_state_t m_sensor_state;
     IntervalTimer sensorTimer;
 public:
+    uint32_t averages[SENSOR_NUM];
+    int16_t m_sensor_offsets[SENSOR_NUM];
+
     Sensors();
     ~Sensors();
     void calibrateSensors(uint16_t iterations, uint8_t delay_ms);
