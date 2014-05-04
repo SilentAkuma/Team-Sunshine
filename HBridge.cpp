@@ -39,6 +39,21 @@ void initMotors(uint8_t IN1, uint8_t IN2, uint8_t IN3, uint8_t IN4, uint8_t ENA,
     digitalWrite(ENB, LOW);
 }
 
+void setMotor(uint8_t motor, float speed)
+{
+    if(speed > 1)
+    {
+        speed = 1;
+    }
+    if(speed < -1)
+    {
+        speed = -1;
+    }
+
+    speed *= MOTOR_FULL_FORWARD;
+    setMotor(motor, (int16_t)speed);
+}
+
 void setMotor(uint8_t motor, int16_t speed)
 {
     if(speed < 0)

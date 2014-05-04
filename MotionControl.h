@@ -1,11 +1,11 @@
 #ifndef MOTION_CONTROL_H
 #define MOTION_CONTROL_H
 
-static const float Kpx = 2;
-static const float Kdx = 10;
+static const float Kpx = 0.005;
+static const float Kdx = 0.001;
 
-static const float Kpw = 1;
-static const float Kdw = 1;
+static const float Kpw = 0.005;
+static const float Kdw = 0.001;
 
 static const float Ka = 0.5;
 

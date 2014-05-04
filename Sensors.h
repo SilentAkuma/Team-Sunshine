@@ -7,6 +7,8 @@
 #define SENSOR_D_PERIOD 10000
 #define SENSOR_D_EMIT_TIME 80
 
+#define SENSOR_NUM 4
+
 class Sensors
 {
 protected:
@@ -17,10 +19,10 @@ protected:
     uint32_t m_period;
     uint32_t m_emit_time;
 
-    uint16_t *m_sensor_data_internal;
+    uint16_t m_sensor_data_internal[SENSOR_NUM];
     uint16_t *m_sensor_data_external;
-    int16_t *m_sensor_offsets;
-    bool *m_sensor_data_lock;
+    int16_t m_sensor_offsets[SENSOR_NUM];
+    bool m_sensor_data_lock[SENSOR_NUM];
 
     typedef enum
     {
@@ -34,7 +36,7 @@ public:
     Sensors();
     ~Sensors();
     void calibrateSensors(uint16_t iterations, uint8_t delay_ms);
-    void init(uint16_t* sensor_data, uint8_t *tx_pins, uint8_t *rx_pins, uint8_t sensor_ct, uint32_t period = SENSOR_D_PERIOD, uint32_t emit_time = SENSOR_D_EMIT_TIME);
+    void init(uint16_t* sensor_data, uint8_t *tx_pins, uint8_t *rx_pins, uint32_t period = SENSOR_D_PERIOD, uint32_t emit_time = SENSOR_D_EMIT_TIME);
     void updateData(void);
 
     friend void sensorISR(void);

@@ -15,6 +15,7 @@
 
 void initMotors(uint8_t IN1, uint8_t IN2, uint8_t IN3, uint8_t IN4, uint8_t ENA, uint8_t ENB);
 void setMotor(uint8_t motor, int16_t speed);
+void setMotor(uint8_t motor, float speed);
 void stopMotor(uint8_t motor);
 void enableMotor(uint8_t motor);
 void disableMotor(uint8_t motor);
