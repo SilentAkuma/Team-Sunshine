@@ -4,8 +4,8 @@
 #include "IntervalTimer.h"
 #include "Arduino.h"
 
-#define SENSOR_D_PERIOD 10000
-#define SENSOR_D_EMIT_TIME 80
+#define SENSOR_D_PERIOD 1000
+#define SENSOR_D_EMIT_TIME 50
 
 #define SENSOR_NUM 4
 

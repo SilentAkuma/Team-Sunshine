@@ -97,6 +97,11 @@ void Sensors::calibrateSensors(uint16_t iter, uint8_t delay_ms)
 {
     uint32_t averages[SENSOR_NUM];
 
+    for(uint8_t i = 0; i < SENSOR_NUM; i++)
+    {
+        averages[i] = 0;
+    }
+
     for(uint16_t i = 0; i < iter; i++)
     {
         updateData();
@@ -117,10 +122,10 @@ void Sensors::calibrateSensors(uint16_t iter, uint8_t delay_ms)
         total_average += averages[i];
     }
 
-    total_average /= iter;
+    total_average /= SENSOR_NUM;
 
     for(uint8_t i = 0; i < SENSOR_NUM; i++)
     {
-        m_sensor_offsets[i] = (int16_t)(averages[i]) - (int16_t)(total_average);
+        m_sensor_offsets[i] = (total_average - averages[i]);
     }
 }
