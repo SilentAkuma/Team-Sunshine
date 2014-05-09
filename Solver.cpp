@@ -2,12 +2,13 @@
 
 #include <stdint.h>
 #include <vector>
+//#include <iostream>
 
 int8_t maze[16][16] = {0};
 int8_t wallsx[16][15] = {0};
 int8_t wallsy[15][16] = {0};
 int8_t destCol = 7; //7
-int8_t destRow = 8; //7
+int8_t destRow = 8; //8
 int8_t curRow = 0;
 int8_t curCol = 0;
 Heading curHd = North;
@@ -188,7 +189,7 @@ Point smallestAdjacent(int8_t row, int8_t col) {
 	Point r;
 	// CHECK SOUTH
 	if(row != 0) {
-		if(maze[row-1][col] != -1 && maze[row-1][col] < smallest) {
+		if(maze[row-1][col] != -1 && maze[row-1][col] < smallest && wallsy[row-1][col] != 1) {
 			smallest = maze[row-1][col];
 			r.row = row-1;
 			r.col = col;
@@ -196,7 +197,7 @@ Point smallestAdjacent(int8_t row, int8_t col) {
 	}
 	// CHECK NORTH
 	if(row != MAZEMAX-1) {
-		if(maze[row+1][col] != -1 && maze[row+1][col] < smallest) {
+		if(maze[row+1][col] != -1 && maze[row+1][col] < smallest && wallsy[row][col] != 1) {
 			smallest = maze[row+1][col];
 			r.row = row+1;
 			r.col = col;
@@ -204,7 +205,7 @@ Point smallestAdjacent(int8_t row, int8_t col) {
 	}
 	// CHECK WEST
 	if(col != 0) {
-		if(maze[row][col-1] != -1 && maze[row][col-1] < smallest) {
+		if(maze[row][col-1] != -1 && maze[row][col-1] < smallest && wallsx[row][col-1] != 1) {
 			smallest = maze[row][col-1];
 			r.row = row;
 			r.col = col-1;
@@ -212,7 +213,7 @@ Point smallestAdjacent(int8_t row, int8_t col) {
 	}
 	// CHECK EAST
 	if(col != MAZEMAX-1) {
-		if(maze[row][col+1] != -1 && maze[row][col+1] < smallest) {
+		if(maze[row][col+1] != -1 && maze[row][col+1] < smallest && wallsx[row][col] != 1) {
 			smallest = maze[row][col+1];
 			r.row = row;
 			r.col = col+1;
@@ -278,6 +279,8 @@ Point findNextSpace() {
 		nextSpace.row = nextCell.row;
 		nextSpace.col = nextCell.col;
 	}
+	//std::cout << "CurRow: " << (int) curRow << std::endl;
+	//std::cout << "CurCol: " << (int) curCol << std::endl;
 	return nextSpace;
 }
 
@@ -405,11 +408,76 @@ int main() {
 	Point nextSpace;
 	Vector nextMove;
 	uint16_t directions_size;
-    updateWalls(true, true, true, 1, 1, North);
-	updateWalls(true, true, true, 0, 1, South);
-	std::cout << "Left: " << wallsx[1][0] << std::endl;
-	std::cout << "Right: " << wallsx[1][1] << std::endl;
-	std::cout << "Front: " << wallsy[1][1] << std:: endl;
+    wallsx[0][0] = 1;
+    wallsx[0][1] = 1;
+    wallsx[0][3] = 1;
+    wallsx[0][5] = 1;
+    wallsx[1][1] = 1;
+    wallsx[1][2] = 1;
+    wallsx[1][3] = 1;
+    wallsx[1][4] = 1;
+    wallsx[1][6] = 1;
+    wallsx[2][1] = 1;
+    wallsx[2][2] = 1;
+    wallsx[2][3] = 1;
+    wallsx[2][6] = 1;
+    wallsx[3][1] = 1;
+    wallsx[3][2] = 1;
+    wallsx[3][3] = 1;
+    wallsx[3][6] = 1;
+    wallsx[4][1] = 1;
+    wallsx[4][2] = 1;
+    wallsx[4][3] = 1;
+    wallsx[4][6] = 1;
+    wallsx[5][1] = 1;
+    wallsx[5][2] = 1;
+    wallsx[5][6] = 1;
+    wallsx[6][1] = 1;
+    wallsx[6][5] = 1;
+    wallsx[6][6] = 1;
+    wallsx[7][1] = 1;
+    wallsx[7][2] = 1;
+    wallsx[7][3] = 1;
+    wallsx[7][4] = 1;
+    wallsx[7][5] = 1;
+    wallsx[7][6] = 1;
+    wallsx[8][5] = 1;
+    wallsx[8][6] = 1;
+    wallsx[9][0] = 1;
+    wallsx[9][1] = 1;
+    wallsx[9][2] = 1;
+    wallsx[9][3] = 1;
+    wallsx[9][4] = 1;
+    wallsx[9][5] = 1;
+    wallsx[9][6] = 1;
+    wallsy[1][0] = 1;
+    wallsy[1][4] = 1;
+    wallsy[1][6] = 1;
+    wallsy[2][0] = 1;
+    wallsy[2][5] = 1;
+    wallsy[2][6] = 1;
+    wallsy[3][0] = 1;
+    wallsy[3][4] = 1;
+    wallsy[3][6] = 1;
+    wallsy[4][1] = 1;
+    wallsy[4][4] = 1;
+    wallsy[4][5] = 1;
+    wallsy[5][0] = 1;
+    wallsy[5][3] = 1;
+    wallsy[5][4] = 1;
+    wallsy[5][5] = 1;
+    wallsy[6][1] = 1;
+    wallsy[6][2] = 1;
+    wallsy[6][3] = 1;
+    wallsy[6][4] = 1;
+    wallsy[7][0] = 1;
+    wallsy[8][6] = 1;
+    wallsy[8][7] = 1;
+
+
+	//std::cout << "Left: " << wallsx[1][0] << std::endl;
+	//std::cout << "Right: " << wallsx[1][1] << std::endl;
+	//std::cout << "Front: " << wallsy[1][1] << std:: endl;
 
 	//Adjust position if it is first turn
 	if(firstTurn) {
@@ -418,7 +486,7 @@ int main() {
 	//Update walls at current position
 	//updateWalls(left, right, front, curRow, curCol, curHd);
 
-	//Fill maze using flood fille algorithm
+	//Fill maze using flood fill algorithm
 	floodfill();
 
 	//Find the next space
@@ -484,5 +552,5 @@ int main() {
 
     return 1;
 }
-
 */
+
