@@ -10,6 +10,7 @@ static const float wheel_diameter = 4.25; //cm
 static const float cell_size_in_wheel_rots = cell_size/(wheel_diameter * PI);
 
 #define DIST_CELLS(x) (cell_size_in_wheel_rots * (x))
+#define wDECEL .9
 
 static const float Kpx = 0.005;
 static const float Kdx = 0.001;

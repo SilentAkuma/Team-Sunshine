@@ -133,6 +133,10 @@ void control_update(float dt)
     {
         if(rotatingRight)
         {
+            if(gyroAngle>=3/4*targetAngle)
+            {
+                targetwSpeed=wDECEL*targetwSpeed;
+            }
             if(gyroAngle >= targetAngle)
             {
                 targetwPointSet = false;
@@ -141,6 +145,10 @@ void control_update(float dt)
         }
         else
         {
+            if(gyroAngle<=3/4*targetAngle)
+            {
+                targetwSpeed=wDECEL*targetwSpeed;
+            }
             if(gyroAngle <= targetAngle)
             {
                 targetwPointSet = false;
