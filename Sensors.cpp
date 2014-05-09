@@ -115,5 +115,7 @@ void Sensors::calibrateSensors(uint16_t iter, uint8_t delay_ms)
     for(uint8_t i = 0; i < SENSOR_NUM; i++)
     {
         averages[i] /= iter;
+		//if(i == 0 || i == 3)
+		//	averages[i] -= 100;
     }
 }
