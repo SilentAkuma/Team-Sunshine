@@ -128,7 +128,7 @@ void control_update(float dt)
         rSensorError = sensors.m_sensor_data_external[2];
         rSensorError -= tempb;
 
-        if(abs(lSensorError) < 100 && abs(rSensorError) < 100)
+        if(abs(lSensorError) < 50 && abs(rSensorError) < 50)
         {
             targetxSpeed = 0;
             targetwSpeed = 0;
@@ -138,14 +138,16 @@ void control_update(float dt)
         }
 
         targetxSpeed =
-        constrain((lSensorError + rSensorError)*0.005, 0.75, -0.75);
+        constrain((lSensorError + rSensorError)*-0.005, 0.75, -0.75);
 
         targetwSpeed =
         (lSensorError - rSensorError)*-0.005;
 
+        Serial.print(" ");
         Serial.print(lSensorError);
         Serial.print(" ");
-        Serial.println(rSensorError);
+        Serial.print(rSensorError);
+        Serial.print(" ");
 
     }
 

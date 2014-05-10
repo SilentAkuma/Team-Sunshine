@@ -20,7 +20,6 @@ protected:
     uint32_t m_emit_time;
 
     uint16_t m_sensor_data_internal[SENSOR_NUM];
-    uint16_t *m_sensor_data_external;
     bool m_sensor_data_lock[SENSOR_NUM];
 
     typedef enum
@@ -32,6 +31,7 @@ protected:
     sensor_state_t m_sensor_state;
     IntervalTimer sensorTimer;
 public:
+    uint16_t *m_sensor_data_external;
     uint32_t averages[SENSOR_NUM];
     int16_t m_sensor_offsets[SENSOR_NUM];
 
