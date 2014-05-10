@@ -23,7 +23,7 @@ float targetWheelPos;
 float targetAngle;
 bool rotatingRight;
 
-bool targetxPointSet, targetwPointSet;
+bool targetxPointSet, targetwPointSet, targetApproachPointSet;
 
 ITG3200 *m_gyro;
 
@@ -118,6 +118,37 @@ void control_update(float dt)
 
     updateGyroAngle(dt);
 
+    if(targetApproachPointSet)
+    {
+        float lSensorError, rSensorError, tempa, tempb;
+        tempa = sensors.averages[1];
+        lSensorError = sensors.m_sensor_data_external[1];
+        lSensorError -= tempa;
+        tempb = sensors.averages[2];
+        rSensorError = sensors.m_sensor_data_external[2];
+        rSensorError -= tempb;
+
+        if(abs(lSensorError) < 100 && abs(rSensorError) < 100)
+        {
+            targetxSpeed = 0;
+            targetwSpeed = 0;
+
+            targetApproachPointSet = false;
+            completed_move();
+        }
+
+        targetxSpeed =
+        constrain((lSensorError + rSensorError)*0.005, 0.75, -0.75);
+
+        targetwSpeed =
+        (lSensorError - rSensorError)*-0.005;
+
+        Serial.print(lSensorError);
+        Serial.print(" ");
+        Serial.println(rSensorError);
+
+    }
+
     // Linear setpoint handling
     if(targetxPointSet)
     {
@@ -131,12 +162,12 @@ void control_update(float dt)
     // Angular setpoint handling
     if(targetwPointSet)
     {
+        if(abs(gyroAngle - targetAngle) < 10)
+            {
+                targetwSpeed= (targetAngle - gyroAngle) * -0.2;
+            }
         if(rotatingRight)
         {
-            if(gyroAngle>=3/4*targetAngle)
-            {
-                targetwSpeed=wDECEL*targetwSpeed;
-            }
             if(gyroAngle >= targetAngle)
             {
                 targetwPointSet = false;
@@ -145,10 +176,6 @@ void control_update(float dt)
         }
         else
         {
-            if(gyroAngle<=3/4*targetAngle)
-            {
-                targetwSpeed=wDECEL*targetwSpeed;
-            }
             if(gyroAngle <= targetAngle)
             {
                 targetwPointSet = false;
@@ -225,4 +252,13 @@ void turn(float degrees, float angspeed, float angaccel)
 
     targetAngle = gyroAngle + degrees;
     targetwPointSet = true;
+}
+
+void approachWall(void)
+{
+    targetApproachPointSet = true;
+    xAccel = 1000;
+    xSpeed = 1000;
+    targetxSpeed = 0;
+    targetwSpeed = 0;
 }
