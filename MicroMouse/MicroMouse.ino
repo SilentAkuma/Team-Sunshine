@@ -28,16 +28,21 @@ float x,y,z;
 
 int curtime, prevtime;
 
+int directions_size=0;
+int indexcounter=0;
+
 uint32_t sensor_f_average, sensor_s_average;
 
 uint8_t wallmask = 0;
+
+float drive_speed = 0.8, turn_speed = 1;
 
 #define WALL_LEFT 0x01
 #define WALL_FRONT 0x02
 #define WALL_RIGHT 0x04
 
 #define FRONT_THRESHOLD 450
-#define LR_THRESHOLD 360
+#define LR_THRESHOLD 350
 
 #define SUGGESTED_LOOP_DELAY_TIME 10000
 
@@ -49,6 +54,8 @@ bool done_move = false;
 bool driving_straight = false;
 
 bool compoundMove = false;
+
+bool run2 = false;
 
 int32_t deviation = 0;
 
@@ -72,7 +79,7 @@ void setup()
     Wire.begin();
 
     // Wait 5000 ms to let the user get his/her hand away from the mouse
-    delay(5000);
+    delay(3000);
 
     // Initialize stuff
     Serial.print("Initializing: ");
@@ -116,16 +123,31 @@ void setup()
     prevtime = micros()-100;
 
     turn(180, 1, 10);
-    
+
     prevAngle = gyroAngle;
 }
+
+bool completedWallApproach = true;
 
 void completed_move(void)
 {
     stop_moving();
-
-    move_timer.begin(setMoveFlagISR, 1000000);
-
+    if(!completedWallApproach)
+    {
+        if(wallmask & WALL_FRONT)
+        {
+            Serial.println("APPROACHIN' THE WALL!");
+            approachWall();
+        }else
+        {
+            move_timer.begin(setMoveFlagISR, 100000);
+        }
+        completedWallApproach = true;
+    }
+    else
+    {
+        move_timer.begin(setMoveFlagISR, 100000);
+    }
 }
 
 void setMoveFlagISR(void)
@@ -156,9 +178,10 @@ void loop()
     {
         if(compoundMove)
         {
-            move_forward(DIST_CELLS(1), 1, 10);
+            move_forward(DIST_CELLS(1), drive_speed, 10);
             driving_straight = true;
             compoundMove = false;
+            completedWallApproach = false;
         }
         else
         {
@@ -173,31 +196,31 @@ void loop()
 
             Vector nextMove = moveNextSpace(nextSpace);
             /*Vector nextMove;
-            if((wallmask & WALL_LEFT) && (wallmask & WALL_RIGHT) && (wallmask & WALL_FRONT))
-            {
-              nextMove.dir = Reverse;  
-            }else if((wallmask & WALL_LEFT) && (wallmask & WALL_RIGHT))
-            {
-              nextMove.dir = Forward;
-            }else if((wallmask & WALL_RIGHT) && (wallmask & WALL_FRONT))
-            {
-              nextMove.dir = Left;
-            }else if((wallmask & WALL_LEFT) && (wallmask & WALL_FRONT))
-            {
-              nextMove.dir = Right;
-            }else if((wallmask & WALL_FRONT))
-            {
-              nextMove.dir = Right;
-            }else
-            {
-              nextMove.dir = Forward;
-            }
-            
-            nextMove.mag = 1;
-            */
+             if((wallmask & WALL_LEFT) && (wallmask & WALL_RIGHT) && (wallmask & WALL_FRONT))
+             {
+             nextMove.dir = Reverse;
+             }else if((wallmask & WALL_LEFT) && (wallmask & WALL_RIGHT))
+             {
+             nextMove.dir = Forward;
+             }else if((wallmask & WALL_RIGHT) && (wallmask & WALL_FRONT))
+             {
+             nextMove.dir = Left;
+             }else if((wallmask & WALL_LEFT) && (wallmask & WALL_FRONT))
+             {
+             nextMove.dir = Right;
+             }else if((wallmask & WALL_FRONT))
+             {
+             nextMove.dir = Right;
+             }else
+             {
+             nextMove.dir = Forward;
+             }
+
+             nextMove.mag = 1;
+             */
             Serial.print("Direction: ");
             Serial.println(nextMove.dir);
-
+            if(!run2){
             switch(nextMove.dir)
             {
             case Left:
@@ -224,30 +247,75 @@ void loop()
                 driving_straight = false;
                 compoundMove = true;
                 break;
-            }
+            }}
+            else{
+            switch(nextMove.dir)
+            {
+            case Left:
+                Serial.println("TURNING LEFT!");
+                turn(-90, 1, 10);
+                driving_straight = false;
+                compoundMove = true;
+                break;
+            case Right:
+                Serial.println("TURNING RIGHT!");
+                turn(90, 1, 10);
+                driving_straight = false;
+                compoundMove = true;
+                break;
+            case Forward:
+                Serial.println("GOIN' STEADY!");
+                move_forward(DIST_CELLS(directions[indexcounter].mag), 1.5, 10);
+                indexcounter++;
+                driving_straight = true;
+                compoundMove = false;
+                break;
+            case Reverse:
+                Serial.println("U-TURN BEEYOTCH!");
+                turn(180, 1, 10);
+                driving_straight = false;
+                compoundMove = true;
+                break;
+            }}
+            
+            if(nextSpace.row == destRow && nextSpace.col == destCol && shouldGoHome) {
+		shouldGoHome = false;
+		destRow = 0;
+		destCol = 0;
+		floodfill();
+	    }
+
+	    if(nextSpace.row == destRow && nextSpace.col == destCol && !shouldGoHome) {
+		directions_size = secondRun();
+		/*for(uint16_t i = 0; i < directions_size; i++) {
+	        	std::cout << "DIRECTIONS: " << directions[i].dir << ", " << (int) directions[i].mag << std::endl;
+		}*/
+		//break;
+                run2 = true;
+	    }
         }
         done_move = false;
 
-
+        print_debug_data();
     }
 
-    print_debug_data();
+
 
     if(driving_straight)
     {
         targetwSpeed = deviation * CenteringKp + (gyroAngle - prevAngle)*dt*-0.05;
         wAccel = 1000;
     }
-    
+
     prevAngle = gyroAngle;
 
     // Update the motion controller
     control_update(dt);
 
     // Loop delay
-//    int32_t delay_time = SUGGESTED_LOOP_DELAY_TIME - (dt*1000000);
-//    if(delay_time > 0)
-//        delayMicroseconds(delay_time);
+    //    int32_t delay_time = SUGGESTED_LOOP_DELAY_TIME - (dt*1000000);
+    //    if(delay_time > 0)
+    //        delayMicroseconds(delay_time);
     delay(10);
 }
 
@@ -286,15 +354,15 @@ int32_t update_deviation(void)
 void print_debug_data(void)
 {
 
-//    Serial.print("Left vel: ");
-//    Serial.print(getLWheelVelocity());
-//    Serial.print(" Right vel: ");
-//    Serial.print(getRWheelVelocity());
-//    Serial.print(" Left ct: ");
-//    Serial.print(Lcounter);
-//    Serial.print(" Right ct: ");
-//    Serial.print(Rcounter);
-//    Serial.print(" Sensors: ");
+    Serial.print("Left vel: ");
+    Serial.print(getLWheelVelocity());
+    Serial.print(" Right vel: ");
+    Serial.print(getRWheelVelocity());
+    Serial.print(" Left ct: ");
+    Serial.print(Lcounter);
+    Serial.print(" Right ct: ");
+    Serial.print(Rcounter);
+    Serial.print(" Sensors: ");
     Serial.print(sensor_data[0]);
     Serial.print(", ");
     Serial.print(sensor_data[1]);
@@ -316,3 +384,5 @@ void print_debug_data(void)
     Serial.print(" Micros: ");
     Serial.println(micros());
 }
+
+

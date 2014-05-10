@@ -138,7 +138,7 @@ void insertWall(Heading hd, int8_t row, int8_t col) {
     }
 	return;
 }
-
+/*
 void removeWall(Heading hd, int8_t row, int8_t col) {
     switch(hd) {
       case North:
@@ -164,31 +164,32 @@ void removeWall(Heading hd, int8_t row, int8_t col) {
     }
 	return;
 }
+*/
 
 void updateWalls(bool left, bool right, bool front, int8_t row, int8_t col, Heading hd) {
     Heading cur;
     if(left) {
 		cur = headingLeft(hd);
 		insertWall(cur, row, col);
-    }else
+    }/*else
     {
         cur = headingLeft(hd);
         removeWall(cur, row, col);
-    }
+    }*/
 	if(right) {
 		cur = headingRight(hd);
 		insertWall(cur, row, col);
-	}else
+	}/*else
     {
         cur = headingRight(hd);
         removeWall(cur, row, col);
-    }
+    }*/
 	if(front) {
 		insertWall(hd, row, col);
-	}else
+	}/*else
     {
         removeWall(hd, row, col);
-    }
+    }*/
 	return;
 }
 
