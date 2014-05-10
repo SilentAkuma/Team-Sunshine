@@ -130,7 +130,7 @@ void completed_move(void)
     if(wallmask & WALL_FRONT)
     {
       approachWall();
-    } 
+    }
     completedWallApproach = true;
   }
   else
@@ -189,7 +189,7 @@ void loop()
       /*Vector nextMove;
        if((wallmask & WALL_LEFT) && (wallmask & WALL_RIGHT) && (wallmask & WALL_FRONT))
        {
-       nextMove.dir = Reverse;  
+       nextMove.dir = Reverse;
        }else if((wallmask & WALL_LEFT) && (wallmask & WALL_RIGHT))
        {
        nextMove.dir = Forward;
@@ -206,7 +206,7 @@ void loop()
        {
        nextMove.dir = Forward;
        }
-       
+
        nextMove.mag = 1;
        */
       Serial.print("Direction: ");
@@ -301,35 +301,35 @@ int32_t update_deviation(void)
 void print_debug_data(void)
 {
 
-  //    Serial.print("Left vel: ");
-  //    Serial.print(getLWheelVelocity());
-  //    Serial.print(" Right vel: ");
-  //    Serial.print(getRWheelVelocity());
-  //    Serial.print(" Left ct: ");
-  //    Serial.print(Lcounter);
-  //    Serial.print(" Right ct: ");
-  //    Serial.print(Rcounter);
-  //    Serial.print(" Sensors: ");
-//  Serial.print(sensor_data[0]);
-//  Serial.print(", ");
-//  Serial.print(sensor_data[1]);
-//  Serial.print(", ");
-//  Serial.print(sensor_data[2]);
-//  Serial.print(", ");
-//  Serial.print(sensor_data[3]);
-//
-//  Serial.print(wallmask & WALL_LEFT ? " L" : "  ");
-//  Serial.print(wallmask & WALL_FRONT ? "F" : " ");
-//  Serial.print(wallmask & WALL_RIGHT ? "R " : "  ");
-//
-//  Serial.print(deviation);
-//  Serial.print(", ");
-//  Serial.print(curHd);
-//
-//  //    Serial.print(gyroAngle);
-//
-//  Serial.print(" Micros: ");
-//  Serial.println(micros());
+    Serial.print("Left vel: ");
+    Serial.print(getLWheelVelocity());
+    Serial.print(" Right vel: ");
+    Serial.print(getRWheelVelocity());
+    Serial.print(" Left ct: ");
+    Serial.print(Lcounter);
+    Serial.print(" Right ct: ");
+    Serial.print(Rcounter);
+    Serial.print(" Sensors: ");
+    Serial.print(sensor_data[0]);
+    Serial.print(", ");
+    Serial.print(sensor_data[1]);
+    Serial.print(", ");
+    Serial.print(sensor_data[2]);
+    Serial.print(", ");
+    Serial.print(sensor_data[3]);
+
+    Serial.print(wallmask & WALL_LEFT ? " L" : "  ");
+    Serial.print(wallmask & WALL_FRONT ? "F" : " ");
+    Serial.print(wallmask & WALL_RIGHT ? "R " : "  ");
+
+    Serial.print(deviation);
+    Serial.print(", ");
+    Serial.print(curHd);
+
+    //    Serial.print(gyroAngle);
+
+    Serial.print(" Micros: ");
+    Serial.println(micros());
 }
 
 
