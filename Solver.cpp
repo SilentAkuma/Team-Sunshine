@@ -139,19 +139,56 @@ void insertWall(Heading hd, int8_t row, int8_t col) {
 	return;
 }
 
+void removeWall(Heading hd, int8_t row, int8_t col) {
+    switch(hd) {
+      case North:
+		  if(row != MAZEMAX-1)
+			  if(wallsy[row][col] != 0)
+				  wallsy[row][col] = 0;
+		  break;
+      case South:
+		  if(row != 0)
+			  if(wallsy[row-1][col] != 0)
+				  wallsy[row-1][col] = 0;
+		  break;
+      case East:
+		  if(col != MAZEMAX-1)
+			  if(wallsx[row][col] != 0)
+				  wallsx[row][col] = 0;
+		  break;
+      case West:
+		  if(col != 0)
+			  if(wallsx[row][col-1] != 0)
+				  wallsx[row][col-1] = 0;
+		  break;
+    }
+	return;
+}
+
 void updateWalls(bool left, bool right, bool front, int8_t row, int8_t col, Heading hd) {
     Heading cur;
     if(left) {
 		cur = headingLeft(hd);
 		insertWall(cur, row, col);
+    }else
+    {
+        cur = headingLeft(hd);
+        removeWall(cur, row, col);
     }
 	if(right) {
 		cur = headingRight(hd);
 		insertWall(cur, row, col);
-	}
+	}else
+    {
+        cur = headingRight(hd);
+        removeWall(cur, row, col);
+    }
 	if(front) {
 		insertWall(hd, row, col);
-	}
+	}else
+    {
+        removeWall(hd, row, col);
+    }
 	return;
 }
 
