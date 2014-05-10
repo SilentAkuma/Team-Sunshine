@@ -36,8 +36,8 @@ uint8_t wallmask = 0;
 #define WALL_FRONT 0x02
 #define WALL_RIGHT 0x04
 
-#define FRONT_THRESHOLD 40
-#define LR_THRESHOLD 40
+#define FRONT_THRESHOLD 450
+#define LR_THRESHOLD 360
 
 #define SUGGESTED_LOOP_DELAY_TIME 10000
 
@@ -55,6 +55,8 @@ int32_t deviation = 0;
 float dt;
 
 int command = 0;
+
+float prevAngle = 0;
 
 void setup()
 {
@@ -114,6 +116,8 @@ void setup()
     prevtime = micros()-100;
 
     turn(180, 1, 10);
+    
+    prevAngle = gyroAngle;
 }
 
 void completed_move(void)
@@ -145,7 +149,7 @@ void loop()
     update_wallmask();
 
     // Calculate the deviation from center according to the IR sensors
-    deviation = update_deviation();
+    deviation = constrain(update_deviation(), -30, 30);
 
     // Determine what to do next
     if(done_move)
@@ -161,17 +165,36 @@ void loop()
             if(firstTurn)
                 handleFirstTurn(wallmask & WALL_LEFT, wallmask & WALL_RIGHT, wallmask & WALL_FRONT);
 
-            //updateWalls(wallmask & WALL_LEFT, wallmask & WALL_RIGHT, wallmask & WALL_FRONT, curRow, curCol, curHd);
+            updateWalls(wallmask & WALL_LEFT, wallmask & WALL_RIGHT, wallmask & WALL_FRONT, curRow, curCol, curHd);
 
-            //floodfill();
+            floodfill();
 
-            //Point nextSpace = findNextSpace();
+            Point nextSpace = findNextSpace();
 
-            //Vector nextMove = moveNextSpace(nextSpace);
-            Vector nextMove;
-            nextMove.dir = Forward;
+            Vector nextMove = moveNextSpace(nextSpace);
+            /*Vector nextMove;
+            if((wallmask & WALL_LEFT) && (wallmask & WALL_RIGHT) && (wallmask & WALL_FRONT))
+            {
+              nextMove.dir = Reverse;  
+            }else if((wallmask & WALL_LEFT) && (wallmask & WALL_RIGHT))
+            {
+              nextMove.dir = Forward;
+            }else if((wallmask & WALL_RIGHT) && (wallmask & WALL_FRONT))
+            {
+              nextMove.dir = Left;
+            }else if((wallmask & WALL_LEFT) && (wallmask & WALL_FRONT))
+            {
+              nextMove.dir = Right;
+            }else if((wallmask & WALL_FRONT))
+            {
+              nextMove.dir = Right;
+            }else
+            {
+              nextMove.dir = Forward;
+            }
+            
             nextMove.mag = 1;
-
+            */
             Serial.print("Direction: ");
             Serial.println(nextMove.dir);
 
@@ -212,9 +235,11 @@ void loop()
 
     if(driving_straight)
     {
-        targetwSpeed = deviation * CenteringKp;
+        targetwSpeed = deviation * CenteringKp + (gyroAngle - prevAngle)*dt*-0.05;
         wAccel = 1000;
     }
+    
+    prevAngle = gyroAngle;
 
     // Update the motion controller
     control_update(dt);
@@ -235,7 +260,7 @@ void update_wallmask(void)
     wallmask = (leftwall?WALL_LEFT:0)|(frontwall?WALL_FRONT:0)|(rightwall?WALL_RIGHT:0);
 }
 
-int16_t centering_factor = 20;
+int16_t centering_factor = 0;
 
 int32_t update_deviation(void)
 {
@@ -249,11 +274,11 @@ int32_t update_deviation(void)
     }
     else if(wallmask & WALL_LEFT)
     {
-        return a - c;
+        return (a - c);
     }
     else if(wallmask & WALL_RIGHT)
     {
-        return b - c;
+        return (c - b);
     }
     return 0;
 }
@@ -283,6 +308,8 @@ void print_debug_data(void)
     Serial.print(wallmask & WALL_RIGHT ? "R " : "  ");
 
     Serial.print(deviation);
+    Serial.print(", ");
+    Serial.print(curHd);
 
     //    Serial.print(gyroAngle);
 
